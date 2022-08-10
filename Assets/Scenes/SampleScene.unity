@@ -1034,7 +1034,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 14, z: -10}
+  m_LocalPosition: {x: 0, y: 17.12, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1054,7 +1054,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _yOffset: 4
   _zOffset: 10
-  _lerpSpeed: 0.5
 --- !u!1 &1262746118
 GameObject:
   m_ObjectHideFlags: 0
@@ -1645,6 +1644,18 @@ PrefabInstance:
     - target: {fileID: 7593335227045644076, guid: b278740aa822c8b4ab077afbc4e9a07d, type: 3}
       propertyPath: m_Size.x
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7593335227045644077, guid: b278740aa822c8b4ab077afbc4e9a07d, type: 3}
+      propertyPath: m_Constraints
+      value: 48
+      objectReference: {fileID: 0}
+    - target: {fileID: 7593335227045644078, guid: b278740aa822c8b4ab077afbc4e9a07d, type: 3}
+      propertyPath: _maxSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 7593335227045644078, guid: b278740aa822c8b4ab077afbc4e9a07d, type: 3}
+      propertyPath: _acceleration
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b278740aa822c8b4ab077afbc4e9a07d, type: 3}

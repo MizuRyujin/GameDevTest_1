@@ -5,42 +5,50 @@ public class CameraFollow : MonoBehaviour
 {
     [SerializeField] private float _yOffset;
     [SerializeField] private float _zOffset = 5f;
-    [SerializeField, Range(0.1f, 1f)] private float _lerpSpeed = 0.2f;
     private PlayerController _playerRef;
+    Vector3 newPos;
 
     private void Awake()
     {
         _playerRef = FindObjectOfType<PlayerController>();
     }
 
+    // private void Start()
+    // {
+    //     StartCoroutine(MoveTowardsPlayer());
+    // }
+
     /// <summary>
-    /// Start is called on the frame when a script is enabled just before
-    /// any of the Update methods is called the first time.
+    /// LateUpdate is called every frame, if the Behaviour is enabled.
+    /// It is called after all Update functions have been called.
     /// </summary>
-    private void Start()
+    private void Update()
     {
-        StartCoroutine(MoveTowardsPlayer());
+        MoveTowardsPlayer();
     }
 
-    private IEnumerator MoveTowardsPlayer()
+    /// <summary>
+    /// LateUpdate is called every frame, if the Behaviour is enabled.
+    /// It is called after all Update functions have been called.
+    /// </summary>
+    private void LateUpdate()
     {
-        while (true)
+        transform.position = newPos;
+    }
+
+    private void MoveTowardsPlayer()
+    {
+        newPos = transform.position;
+        Vector3 distance = _playerRef.transform.position - transform.position;
+        Debug.Log(distance);
+
+        if (distance.z > _zOffset)
         {
-            Vector3 newPos = transform.position;
-            Vector3 distance = _playerRef.transform.position - transform.position;
-            Debug.Log(distance);
-
-            if (distance.z > _zOffset)
-            {
-                newPos.z += _playerRef.transform.position.z - _zOffset;
-            }
-            if (distance.y > _yOffset)
-            {
-                newPos.y += _playerRef.transform.position.y - _yOffset;
-            }
-
-            transform.Translate(newPos * Time.deltaTime);
-            yield return null;
+            newPos.z = Mathf.Lerp(newPos.z, _playerRef.transform.position.z - _zOffset, 1f);
+        }
+        if (distance.y < -_yOffset)
+        {
+            newPos.y = Mathf.Lerp(newPos.y, _playerRef.transform.position.y + _yOffset, 1f);
         }
     }
 }
