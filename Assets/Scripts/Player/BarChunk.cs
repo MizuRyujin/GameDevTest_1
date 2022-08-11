@@ -5,6 +5,7 @@ public class BarChunk : MonoBehaviour
 {
     [SerializeField] private Transform _playerCenter;
     [SerializeField] private Transform _edgeTransform;
+    [field: SerializeField] public bool IsLeftSide { get; private set; }
     private Rigidbody _rb;
     private Vector3 _initialScale;
 

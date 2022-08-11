@@ -1,14 +1,9 @@
 using UnityEngine;
 
-public class Collectables : MonoBehaviour, IBarResizer
+public class Collectables : MonoBehaviour
 {
     [SerializeField] private int scoreValue = 10;
     [SerializeField] private bool _increaseBar;
-
-    public void ResizeBar(BarController bar, bool outward)
-    {
-        bar.ChangeBothBarScale(outward);
-    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -17,9 +12,9 @@ public class Collectables : MonoBehaviour, IBarResizer
             score.SetNewScore(scoreValue);
             Destroy(this.gameObject);
         }
-        if (other.TryGetComponent<BarController>(out BarController bar))
+        if (other.TryGetComponent<BarController>(out BarController controller))
         {
-            ResizeBar(bar, _increaseBar);
+            controller.ChangeBothBarScale();
         }
     }
 }

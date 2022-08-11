@@ -1,10 +1,13 @@
 using UnityEngine;
 using NaughtyAttributes;
+using System;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField, Expandable]
     private PlayerStats _playerStats;
+
+    [SerializeField]
     private Camera _main;
     private Vector3 _moveDir;
     private Vector3 _mousePos;
@@ -31,7 +34,6 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        _main = Camera.main;
         Rb = GetComponent<Rigidbody>();
         _moveDir = Vector3.zero;
         _lastPos = Vector3.zero;
@@ -44,7 +46,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        GameManager.Instance.PauseGame += () => _isPaused = !_isPaused;
+        GameManager.Instance.PauseGame += OnPause;
     }
 
     /// <summary>
@@ -52,7 +54,30 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (_isPaused) return;
+        if (GameManager.Instance.IsPaused) return;
+        LockZRotation();
+        UprightOnGround();
+    }
+
+    private void UprightOnGround()
+    {
+        if (IsGrounded && transform.rotation != Quaternion.identity)
+        {
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation, Quaternion.identity, 2f * Time.deltaTime);
+        }
+    }
+
+    private void LockZRotation()
+    {
+        if (IsGrounded)
+        {
+            Rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+        }
+        else
+        {
+            Rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY;
+        }
     }
 
     /// <summary>
@@ -60,9 +85,22 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void FixedUpdate()
     {
-        if (_isPaused) return;
+        if (GameManager.Instance.IsPaused) return;
         MoveOnTouch();
         ContinuousMoveForward();
+    }
+
+    private void OnPause()
+    {
+        Debug.LogWarning("Remove time scale change from player. Use something better");
+        if (GameManager.Instance.IsPaused)
+        {
+            Time.timeScale = 0f;
+        }
+        else
+        {
+            Time.timeScale = 1f;
+        }
     }
 
     private void ContinuousMoveForward()
@@ -75,13 +113,13 @@ public class PlayerController : MonoBehaviour
 
     private void MoveOnTouch()
     {
-
         _mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, _main.nearClipPlane + 1);
 
         if (Input.GetMouseButtonDown(0))
         {
             _lastPos = _main.ScreenToWorldPoint(_mousePos);
         }
+
         if (Input.GetMouseButton(0))
         {
             Vector3 newPos = transform.position;

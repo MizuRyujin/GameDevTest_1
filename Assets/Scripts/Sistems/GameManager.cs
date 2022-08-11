@@ -7,6 +7,8 @@ public class GameManager : MonoBehaviour
     public event Action PauseGame;
     public event Action StartLevel;
 
+    public bool IsPaused { get; private set; }
+
 
     /// <summary>
     /// Awake is called when the script instance is being loaded.
@@ -28,19 +30,32 @@ public class GameManager : MonoBehaviour
     private void Initialize()
     {
         Cursor.lockState = CursorLockMode.Confined;
+        IsPaused = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        KeyboardPause();
     }
 
-    private void Pause()
+    private void KeyboardPause()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            IsPaused = !IsPaused;
             PauseGame?.Invoke();
         }
+    }
+
+    public void PauseButton()
+    {
+        IsPaused = !IsPaused;
+        PauseGame?.Invoke();
+    }
+
+    public void ReturnToMenuButton()
+    {
+        FindObjectOfType<LoadingManager>().ReturnToMenu();
     }
 }
