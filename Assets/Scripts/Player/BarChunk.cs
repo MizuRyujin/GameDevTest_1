@@ -18,13 +18,6 @@ public class BarChunk : MonoBehaviour
         UpdateBarScale();
     }
 
-    /// <summary>
-    /// Update is called every frame, if the MonoBehaviour is enabled.
-    /// </summary>
-    private void Update()
-    {
-    }
-
     private void UpdateBarScale()
     {
         float distance = Vector3.Distance(_playerCenter.position, _edgeTransform.position);
@@ -46,6 +39,12 @@ public class BarChunk : MonoBehaviour
             _edgeTransform.position += _edgeTransform.right * 0.5f;
         }
 
+        UpdateBarScale();
+    }
+
+    public void MoveEdgePosition(Vector3 newPosition)
+    {
+        _edgeTransform.position = newPosition;
         UpdateBarScale();
     }
 }

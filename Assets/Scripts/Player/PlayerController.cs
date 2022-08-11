@@ -1,19 +1,18 @@
 using UnityEngine;
+using NaughtyAttributes;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float _acceleration = 1f;
-    [SerializeField] private float _maxSpeed = 3f;
-    [SerializeField] private float _sideMovementFactor = 5f;
+    [SerializeField, Expandable]
+    private PlayerStats _playerStats;
     private Camera _main;
-    private Rigidbody _rb;
     private Vector3 _moveDir;
     private Vector3 _mousePos;
     private Vector3 _lastPos;
     private float _feetRadius = 0.15f;
     private bool _isPaused;
 
-    public Rigidbody Rb => _rb;
+    public Rigidbody Rb { get; private set; }
 
     public bool IsGrounded
     {
@@ -33,7 +32,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         _main = Camera.main;
-        _rb = GetComponent<Rigidbody>();
+        Rb = GetComponent<Rigidbody>();
         _moveDir = Vector3.zero;
         _lastPos = Vector3.zero;
         _isPaused = false;
@@ -68,10 +67,10 @@ public class PlayerController : MonoBehaviour
 
     private void ContinuousMoveForward()
     {
-        _moveDir += Vector3.forward * _acceleration * Time.fixedDeltaTime;
-        _moveDir.z = _moveDir.z > _maxSpeed ? _maxSpeed : _moveDir.z;
-        _moveDir.y = _rb.velocity.y;
-        _rb.velocity = _moveDir;
+        _moveDir += Vector3.forward * _playerStats.Acceleration * Time.fixedDeltaTime;
+        _moveDir.z = _moveDir.z > _playerStats.MaxSpeed ? _playerStats.MaxSpeed : _moveDir.z;
+        _moveDir.y = Rb.velocity.y;
+        Rb.velocity = _moveDir;
     }
 
     private void MoveOnTouch()
@@ -89,9 +88,9 @@ public class PlayerController : MonoBehaviour
             Vector3 curMousePos = _main.ScreenToWorldPoint(_mousePos);
 
             Vector3 deltaPos = curMousePos - _lastPos;
-            newPos += deltaPos * _sideMovementFactor;
+            newPos += deltaPos * _playerStats.SideMovementFactor;
 
-            _rb.MovePosition(new Vector3(newPos.x, transform.position.y, transform.position.z));
+            Rb.MovePosition(new Vector3(newPos.x, transform.position.y, transform.position.z));
             _lastPos = _main.ScreenToWorldPoint(_mousePos);
         }
     }

@@ -1,18 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerStats : MonoBehaviour
+[CreateAssetMenu(fileName = "New Player Stats", menuName = "Scriptable Objects/Player Stats")]
+public class PlayerStats : ScriptableObject
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [field: SerializeField] public float MaxSpeed { get; private set; }
+    [field: SerializeField] public float Acceleration { get; private set; }
+    [field: SerializeField] public float SideMovementFactor { get; private set; }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
