@@ -3,7 +3,7 @@ using UnityEngine;
 public class Collectables : MonoBehaviour, IBarResizer
 {
     [SerializeField] private int scoreValue = 10;
-    private bool _increaseBar;
+    [SerializeField] private bool _increaseBar;
 
     public void ResizeBar(BarController bar, bool outward)
     {
@@ -14,7 +14,6 @@ public class Collectables : MonoBehaviour, IBarResizer
     {
         if (other.TryGetComponent<PlayerScore>(out PlayerScore score))
         {
-            Debug.Log("Collided");
             score.SetNewScore(scoreValue);
             Destroy(this.gameObject);
         }

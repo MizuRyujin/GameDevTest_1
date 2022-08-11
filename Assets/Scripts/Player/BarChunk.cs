@@ -8,6 +8,8 @@ public class BarChunk : MonoBehaviour
     private Rigidbody _rb;
     private Vector3 _initialScale;
 
+    public Transform EdgeTransform => _edgeTransform;
+
     /// <summary>
     /// Awake is called when the script instance is being loaded.
     /// </summary>
@@ -28,15 +30,20 @@ public class BarChunk : MonoBehaviour
     }
 
     [Button]
-    public void MoveEdgePosition(bool outwards = true)
+    /// <summary>
+    /// Move the edge transform to a specified position.
+    /// </summary>
+    /// <param name="outwards">If the rescale should be outwards or not. Default true</param>
+    /// <param name="increment">How much will the edge move. Default 0.5f</param>
+    public void MoveEdgePosition(bool outwards = true, float increment = 0.5f)
     {
         if (!outwards)
         {
-            _edgeTransform.position -= _edgeTransform.right * 0.5f;
+            _edgeTransform.position -= _edgeTransform.right * increment;
         }
         else
         {
-            _edgeTransform.position += _edgeTransform.right * 0.5f;
+            _edgeTransform.position += _edgeTransform.right * increment;
         }
 
         UpdateBarScale();

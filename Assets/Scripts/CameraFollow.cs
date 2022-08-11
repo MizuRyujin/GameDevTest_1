@@ -40,8 +40,7 @@ public class CameraFollow : MonoBehaviour
     {
         newPos = transform.position;
         Vector3 distance = _playerRef.transform.position - transform.position;
-        Debug.Log(distance);
-
+        
         if (distance.z > _zOffset)
         {
             newPos.z = Mathf.Lerp(newPos.z, _playerRef.transform.position.z - _zOffset, 1f);

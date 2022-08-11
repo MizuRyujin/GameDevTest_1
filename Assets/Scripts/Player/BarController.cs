@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BarController : MonoBehaviour
@@ -30,6 +29,11 @@ public class BarController : MonoBehaviour
         }
         CheckChunksEqualScale();
     }
+    /// <summary>
+    /// Changes the scale of one of the bar chunks.
+    /// </summary>
+    /// <param name="chunk">The chunk to be rescaled. </param>
+    /// <param name="position">The new position for the chunk's edge transform</param>
     public void ChangeBarScale(BarChunk chunk, Vector3 position)
     {
         chunk.MoveEdgePosition(position);
@@ -41,21 +45,22 @@ public class BarController : MonoBehaviour
     /// </summary>
     private void CheckChunksEqualScale()
     {
-        if (_chunks.Length >= 2)
-        {
-            if (_chunks[0].transform.localScale.y != _chunks[1].transform.localScale.y)
-            {
-                StartCoroutine(CO_ResizeBarsToEqualScale());
-            }
-        }
-        else
-        {
-            Debug.LogError("Chunks lost. Check if initialization finds the correct chunks");
-        }
+        Debug.Log($"Code comented on {this.name}");
+        // if (_chunks.Length >= 2)
+        // {
+        //     if (_chunks[0].transform.localScale.y != _chunks[1].transform.localScale.y)
+        //     {
+        //         StartCoroutine(CO_ResizeBarsToEqualScale());
+        //     }
+        // }
+        // else
+        // {
+        //     Debug.LogError("Chunks lost. Check if initialization finds the correct chunks");
+        // }
     }
 
     /// <summary>
-    /// 
+    /// Coroutine that gets the scale difference between both chunks and rescales them
     /// </summary>
     private IEnumerator CO_ResizeBarsToEqualScale()
     {
