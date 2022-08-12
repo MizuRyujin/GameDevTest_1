@@ -8,6 +8,7 @@ public class LoadingManager : MonoBehaviour
 {
     public static LoadingManager Instance { get; private set; }
     private List<AsyncOperation> _scenesToLoad;
+
     public event Action<float> WhileLoading;
 
     /// <summary>
@@ -25,10 +26,30 @@ public class LoadingManager : MonoBehaviour
             Destroy(this.gameObject);
         }
         _scenesToLoad = new List<AsyncOperation>();
-        LoadMainMenu();
+
     }
 
-    public void LoadMainMenu()
+    private void Start()
+    {
+        if (!GameManager.Instance.IsTesting)
+        {
+            LoadMainMenu();
+        }
+        else
+        {
+            LoadLevelToTest();
+        }
+    }
+
+    private void LoadLevelToTest(int buildIndex = 4)
+    {
+        if (buildIndex == 4)
+        {
+            StartGame();
+        }
+    }
+
+    private void LoadMainMenu()
     {
         _scenesToLoad.Add(SceneManager.LoadSceneAsync(1));
     }
@@ -52,6 +73,15 @@ public class LoadingManager : MonoBehaviour
     {
         SceneManager.UnloadSceneAsync(sceneIndex);
         SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
+    }
+
+    public void ReturnToMenu()
+    {
+        _scenesToLoad.Clear();
+
+        _scenesToLoad.Add(SceneManager.LoadSceneAsync(2));
+        _scenesToLoad.Add(SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive));
+        StartCoroutine(TrackLoadProgress());
     }
 
     private IEnumerator TrackLoadProgress()
@@ -78,14 +108,5 @@ public class LoadingManager : MonoBehaviour
         }
 
         Time.timeScale = Time.timeScale < 1f ? 1f : 1f;
-    }
-
-    public void ReturnToMenu()
-    {
-        _scenesToLoad.Clear();
-
-        _scenesToLoad.Add(SceneManager.LoadSceneAsync(2));
-        _scenesToLoad.Add(SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive));
-        StartCoroutine(TrackLoadProgress());
     }
 }

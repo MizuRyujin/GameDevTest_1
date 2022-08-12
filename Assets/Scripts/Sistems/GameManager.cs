@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     public PlayerController PlayerRef { get; set; }
     public event Action OnPauseGame;
     public event Action OnStartLevel;
+    [field: SerializeField] public bool IsTesting { get; private set; }
     private Transform _restartPoint;
 
 
