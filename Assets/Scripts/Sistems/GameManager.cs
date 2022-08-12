@@ -90,6 +90,7 @@ public class GameManager : MonoBehaviour
     public void PauseGame()
     {
         IsPaused = !IsPaused;
+        Time.timeScale = Time.timeScale == 0 ? 0f : 1f;
         OnPauseGame?.Invoke();
     }
 }

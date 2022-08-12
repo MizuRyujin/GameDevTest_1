@@ -43,10 +43,12 @@ public class LoadingManager : MonoBehaviour
 
     private void LoadLevelToTest(int buildIndex = 4)
     {
-        if (buildIndex == 4)
+        if (buildIndex != 4)
         {
-            StartGame();
+            StartGame(buildIndex);
+            return;
         }
+        StartGame();
     }
 
     private void LoadMainMenu()
@@ -66,6 +68,20 @@ public class LoadingManager : MonoBehaviour
                                     3, LoadSceneMode.Additive)); // BaseScene
         _scenesToLoad.Add(SceneManager.LoadSceneAsync(
                                     4, LoadSceneMode.Additive)); // First Level
+        StartCoroutine(TrackLoadProgress());
+    }
+    /// <summary>
+    /// Starts the game. To be used from main menu, start button
+    /// </summary>
+    public void StartGame(int buildIndex)
+    {
+        _scenesToLoad.Clear(); // Clear any previous operations
+
+        _scenesToLoad.Add(SceneManager.LoadSceneAsync(2)); // Loading Screen
+        _scenesToLoad.Add(SceneManager.LoadSceneAsync(
+                                    3, LoadSceneMode.Additive)); // BaseScene
+        _scenesToLoad.Add(SceneManager.LoadSceneAsync(
+                                    buildIndex, LoadSceneMode.Additive)); // First Level
         StartCoroutine(TrackLoadProgress());
     }
 
@@ -106,7 +122,5 @@ public class LoadingManager : MonoBehaviour
             SceneManager.UnloadSceneAsync(2).completed += _ =>
                 Resources.UnloadUnusedAssets();
         }
-
-        Time.timeScale = Time.timeScale < 1f ? 1f : 1f;
     }
 }

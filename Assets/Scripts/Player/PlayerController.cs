@@ -4,18 +4,21 @@ using System;
 
 public class PlayerController : MonoBehaviour
 {
+    public Rigidbody Rb { get; private set; }
+    public event Action OnDeath;
+
     [SerializeField, Expandable]
     private PlayerStats _playerStats;
 
     [SerializeField]
-    private Camera _main;
+    private Camera _playerCam;
     private Vector3 _moveDir;
     private Vector3 _mousePos;
     private Vector3 _lastPos;
     private float _feetRadius = 0.15f;
+    private bool _isTouching;
+    private Ray _ray;
 
-    public Rigidbody Rb { get; private set; }
-    public event Action OnDeath;
 
     public bool IsGrounded
     {
@@ -61,12 +64,36 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         if (GameManager.Instance.IsPaused) return;
-        _mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y,
-                                                        _main.nearClipPlane + 1);
+        // _mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y,
+        //                                                 _main.nearClipPlane + 1);
+        CheckTouch();
         LockZRotation();
         UprightOnGround();
     }
 
+    private void CheckTouch()
+    {
+        _mousePos = Input.mousePosition;
+        _ray = _playerCam.ScreenPointToRay(_mousePos);
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            _isTouching = true;
+
+            if (Physics.Raycast(_ray, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
+            {
+                _lastPos = hit.point;
+            }
+        }
+        else if (Input.GetMouseButtonUp(0))
+        {
+            _isTouching = false;
+        }
+    }
+
+    /// <summary>
+    /// Straightens the player while on the ground
+    /// </summary>
     private void UprightOnGround()
     {
         if (IsGrounded && transform.rotation != Quaternion.identity)
@@ -76,6 +103,9 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Locks RigidBody's Z rotation while on the ground.
+    /// </summary>
     private void LockZRotation()
     {
         if (IsGrounded)
@@ -100,15 +130,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnPause()
     {
-        Debug.LogWarning("Remove time scale change from player. Use something better");
-        if (GameManager.Instance.IsPaused)
-        {
-            Time.timeScale = 0f;
-        }
-        else
-        {
-            Time.timeScale = 1f;
-        }
+        Debug.Log("No behaviour defined when paused");
     }
 
     private void ContinuousMoveForward()
@@ -121,23 +143,20 @@ public class PlayerController : MonoBehaviour
 
     private void MoveOnTouch()
     {
-        if (Input.GetMouseButtonDown(0))
+        RaycastHit hit;
+
+        if (_isTouching)
         {
-            Debug.Log("Previous click last pos: " + _lastPos);
-            _lastPos = _main.ScreenToWorldPoint(_mousePos);
-            Debug.Log("This click last pos" + _lastPos);
-        }
+            if (Physics.Raycast(_ray, out hit, 100f, LayerMask.GetMask("Ground")))
+            {
+                Vector3 newPos = transform.position;
+                Vector3 curMousePos = hit.point;
 
-        if (Input.GetMouseButton(0))
-        {
-            Vector3 newPos = transform.position;
-            Vector3 curMousePos = _main.ScreenToWorldPoint(_mousePos);
-
-            Vector3 deltaPos = curMousePos - _lastPos;
-            newPos += deltaPos * _playerStats.SideMovementFactor;
-
-            Rb.MovePosition(new Vector3(newPos.x, transform.position.y, transform.position.z));
-            _lastPos = _main.ScreenToWorldPoint(_mousePos);
+                Vector3 deltaPos = curMousePos - _lastPos;
+                newPos += deltaPos;
+                Rb.MovePosition(new Vector3(newPos.x, transform.position.y, transform.position.z));
+                _lastPos = hit.point;
+            }
         }
     }
 }
