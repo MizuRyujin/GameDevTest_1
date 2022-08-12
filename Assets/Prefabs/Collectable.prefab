@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7719114239637483232}
   - component: {fileID: 7719114239637483235}
   - component: {fileID: 7719114239637483234}
-  - component: {fileID: 7719114239637483261}
+  - component: {fileID: 7116087622067437555}
   m_Layer: 0
   m_Name: Collectable
   m_TagString: Untagged
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 7719114239637483260}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 11.01, z: 14.110001}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -96,7 +96,7 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &7719114239637483261
+--- !u!114 &7116087622067437555
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -105,8 +105,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7719114239637483260}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da8385542b7bb3f408dc97739e1d57fd, type: 3}
+  m_Script: {fileID: 11500000, guid: 02331c976f45ed24ead9fe379275d9a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scoreValue: 10
-  _increaseBar: 1
+  _shouldIncrease: 1

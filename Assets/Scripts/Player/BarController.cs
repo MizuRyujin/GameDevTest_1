@@ -37,7 +37,8 @@ public class BarController : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Change both bar chunk local scales in a fixed increment. Overload versions
+    /// can have influence in direction and increment value.
     /// </summary>
     /// <param name="outwards">If the increment should be outwards or not.</param>
     public void ChangeBothBarScale(bool outwards)
@@ -52,7 +53,8 @@ public class BarController : MonoBehaviour
     }
 
     /// <summary>
-    /// 
+    /// Change both bar chunk local scales in a fixed increment. Overload versions
+    /// can have influence in direction and increment value.
     /// </summary>
     /// <param name="outwards">If the increment should be outwards or not.</param>
     /// <param name="timesToRepeat">How many times should it repeat the rescaling</param>
