@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class LoadingManager : MonoBehaviour
 {
+    public static LoadingManager Instance { get; private set; }
     private List<AsyncOperation> _scenesToLoad;
     public event Action<float> WhileLoading;
 
@@ -14,7 +15,22 @@ public class LoadingManager : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        DontDestroyOnLoad(this);
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+        _scenesToLoad = new List<AsyncOperation>();
+        LoadMainMenu();
+    }
+
+    public void LoadMainMenu()
+    {
+        _scenesToLoad.Add(SceneManager.LoadSceneAsync(1));
     }
 
     /// <summary>
@@ -22,12 +38,20 @@ public class LoadingManager : MonoBehaviour
     /// </summary>
     public void StartGame()
     {
-        _scenesToLoad = new List<AsyncOperation>(){
-            SceneManager.LoadSceneAsync(1), // Loading Screen
-            SceneManager.LoadSceneAsync(2, LoadSceneMode.Additive), // BaseScene
-            SceneManager.LoadSceneAsync(3, LoadSceneMode.Additive), // First Level
-        };
+        _scenesToLoad.Clear(); // Clear any previous operations
+
+        _scenesToLoad.Add(SceneManager.LoadSceneAsync(2)); // Loading Screen
+        _scenesToLoad.Add(SceneManager.LoadSceneAsync(
+                                    3, LoadSceneMode.Additive)); // BaseScene
+        _scenesToLoad.Add(SceneManager.LoadSceneAsync(
+                                    4, LoadSceneMode.Additive)); // First Level
         StartCoroutine(TrackLoadProgress());
+    }
+
+    public void RestartLevel(int sceneIndex)
+    {
+        SceneManager.UnloadSceneAsync(sceneIndex);
+        SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
     }
 
     private IEnumerator TrackLoadProgress()
@@ -42,14 +66,26 @@ public class LoadingManager : MonoBehaviour
                 yield return null;
             }
         }
-        SceneManager.UnloadSceneAsync(1).completed += _ =>
-            SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(2));
+        if (SceneManager.GetSceneByBuildIndex(3).isLoaded) // If gameplay scene is loaded
+        {
+            SceneManager.UnloadSceneAsync(2).completed += _ =>
+                SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(3));
+        }
+        else
+        {
+            SceneManager.UnloadSceneAsync(2).completed += _ =>
+                Resources.UnloadUnusedAssets();
+        }
+
+        Time.timeScale = Time.timeScale < 1f ? 1f : 1f;
     }
 
     public void ReturnToMenu()
     {
         _scenesToLoad.Clear();
-        _scenesToLoad.Add(SceneManager.LoadSceneAsync(1));
-        _scenesToLoad.Add(SceneManager.LoadSceneAsync(0, LoadSceneMode.Additive));
+
+        _scenesToLoad.Add(SceneManager.LoadSceneAsync(2));
+        _scenesToLoad.Add(SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive));
+        StartCoroutine(TrackLoadProgress());
     }
 }

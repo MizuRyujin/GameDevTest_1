@@ -8,6 +8,7 @@ public class BarChunk : MonoBehaviour
     [field: SerializeField] public bool IsLeftSide { get; private set; }
     private Rigidbody _rb;
     private Vector3 _initialScale;
+    private Vector3 _edgeInitialPos;
 
     public Transform EdgeTransform => _edgeTransform;
 
@@ -17,6 +18,7 @@ public class BarChunk : MonoBehaviour
     private void Awake()
     {
         _initialScale = transform.localScale;
+        _edgeInitialPos = _edgeTransform.localPosition;
         _rb = GetComponent<Rigidbody>();
         UpdateBarScale();
     }
@@ -28,6 +30,12 @@ public class BarChunk : MonoBehaviour
 
         Vector3 midPoint = (_playerCenter.position + _edgeTransform.position) * 0.5f;
         transform.position = midPoint;
+    }
+
+    public void ResetScale()
+    {
+        _edgeTransform.position = _edgeInitialPos;
+        UpdateBarScale();
     }
 
     [Button]

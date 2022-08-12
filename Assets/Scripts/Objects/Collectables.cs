@@ -7,14 +7,25 @@ public class Collectables : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent<PlayerScore>(out PlayerScore score))
+        PlayerScore score;
+        BarController controller;
+
+        if (_increaseBar)
+        {
+            if ((other.TryGetComponent<BarController>(out controller) || other.transform.parent.TryGetComponent<BarController>(out controller)))
+            {
+                controller.ChangeBothBarScale();
+            }
+        }
+        if (other.TryGetComponent<PlayerScore>(out score))
         {
             score.SetNewScore(scoreValue);
             Destroy(this.gameObject);
         }
-        if (other.TryGetComponent<BarController>(out BarController controller))
+        else if (other.transform.parent.TryGetComponent<PlayerScore>(out score))
         {
-            controller.ChangeBothBarScale();
+            score.SetNewScore(scoreValue);
+            Destroy(this.gameObject);
         }
     }
 }

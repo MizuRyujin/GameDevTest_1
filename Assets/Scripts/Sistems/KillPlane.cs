@@ -14,6 +14,21 @@ public class KillPlane : MonoBehaviour
     }
 
     /// <summary>
+    /// Update is called every frame, if the MonoBehaviour is enabled.
+    /// </summary>
+    private void FixedUpdate()
+    {
+        Collider[] colliders = new Collider[1];
+        int hits = Physics.OverlapBoxNonAlloc(
+            _bounds.center, _bounds.extents, colliders,
+            Quaternion.identity, LayerMask.GetMask("Player"));
+        if (hits > 0)
+        {
+            colliders[0].GetComponent<PlayerController>().Die();
+        }
+    }
+
+    /// <summary>
     /// Callback to draw gizmos that are pickable and always drawn.
     /// </summary>
     private void OnDrawGizmos()

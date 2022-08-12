@@ -13,6 +13,14 @@ public class BarController : MonoBehaviour
         _chunks = GetComponentsInChildren<BarChunk>();
     }
 
+    public void ResetScale()
+    {
+        for (int i = 0; i < _chunks.Length; i++)
+        {
+            _chunks[i].ResetScale();
+        }
+    }
+
     /// <summary>
     /// Change both bar chunk local scales in a fixed increment. Overload versions
     /// can have influence in direction and increment value.

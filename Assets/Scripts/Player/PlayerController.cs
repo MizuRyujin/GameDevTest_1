@@ -13,9 +13,9 @@ public class PlayerController : MonoBehaviour
     private Vector3 _mousePos;
     private Vector3 _lastPos;
     private float _feetRadius = 0.15f;
-    private bool _isPaused;
 
     public Rigidbody Rb { get; private set; }
+    public event Action OnDeath;
 
     public bool IsGrounded
     {
@@ -29,6 +29,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void Die()
+    {
+        GameManager.Instance.RestarLevel();
+        OnDeath?.Invoke();
+    }
+
     /// <summary>
     /// Awake is called when the script instance is being loaded.
     /// </summary>
@@ -37,7 +43,6 @@ public class PlayerController : MonoBehaviour
         Rb = GetComponent<Rigidbody>();
         _moveDir = Vector3.zero;
         _lastPos = Vector3.zero;
-        _isPaused = false;
     }
 
     /// <summary>
@@ -46,7 +51,8 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        GameManager.Instance.PauseGame += OnPause;
+        GameManager.Instance.PlayerRef = this;
+        GameManager.Instance.OnPauseGame += OnPause;
     }
 
     /// <summary>
@@ -55,6 +61,8 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         if (GameManager.Instance.IsPaused) return;
+        _mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y,
+                                                        _main.nearClipPlane + 1);
         LockZRotation();
         UprightOnGround();
     }
@@ -113,11 +121,11 @@ public class PlayerController : MonoBehaviour
 
     private void MoveOnTouch()
     {
-        _mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y, _main.nearClipPlane + 1);
-
         if (Input.GetMouseButtonDown(0))
         {
+            Debug.Log("Previous click last pos: " + _lastPos);
             _lastPos = _main.ScreenToWorldPoint(_mousePos);
+            Debug.Log("This click last pos" + _lastPos);
         }
 
         if (Input.GetMouseButton(0))

@@ -4,10 +4,11 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    public event Action PauseGame;
-    public event Action StartLevel;
-
     public bool IsPaused { get; private set; }
+    public PlayerController PlayerRef { get; set; }
+    public event Action OnPauseGame;
+    public event Action OnStartLevel;
+    private Transform _restartPoint;
 
 
     /// <summary>
@@ -37,6 +38,31 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         KeyboardPause();
+        CheckForRestartPoint();
+    }
+
+    private void CheckForRestartPoint()
+    {
+        if (_restartPoint == null)
+        {
+            var obj = FindObjectOfType<RestartPoint>();
+            if (obj)
+            {
+                _restartPoint = obj.transform;
+            }
+        }
+    }
+
+    private void CheckForPlayerRef()
+    {
+        if (PlayerRef == null)
+        {
+            var obj = FindObjectOfType<PlayerController>();
+            if (obj)
+            {
+                PlayerRef = obj;
+            }
+        }
     }
 
     private void KeyboardPause()
@@ -44,18 +70,25 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             IsPaused = !IsPaused;
-            PauseGame?.Invoke();
+            OnPauseGame?.Invoke();
         }
     }
 
-    public void PauseButton()
+    public void RestarLevel()
     {
-        IsPaused = !IsPaused;
-        PauseGame?.Invoke();
+        LoadingManager.Instance.RestartLevel(4);
+        PlayerRef.Rb.MovePosition(_restartPoint.position);
+        PlayerRef.GetComponentInChildren<BarController>().ResetScale();
     }
 
-    public void ReturnToMenuButton()
+    public void ExitGame()
     {
-        FindObjectOfType<LoadingManager>().ReturnToMenu();
+        Application.Quit();
+    }
+
+    public void PauseGame()
+    {
+        IsPaused = !IsPaused;
+        OnPauseGame?.Invoke();
     }
 }
