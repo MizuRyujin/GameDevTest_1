@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     public bool IsPaused { get; private set; }
     public PlayerController PlayerRef { get; set; }
     public Transform RestartPoint { get; set; }
+    public Transform FinishPoint { get; set; }
 
     public event Action OnPauseGame;
     public event Action OnStartLevel;
@@ -44,6 +45,15 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         KeyboardPause();
+        SkipToFinish();
+    }
+
+    private void SkipToFinish()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            PlayerRef.LevelLoaded(FinishPoint.position);
+        }
     }
 
     private void KeyboardPause()
