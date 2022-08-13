@@ -7,9 +7,9 @@ using UnityEngine.SceneManagement;
 public class LoadingManager : MonoBehaviour
 {
     public static LoadingManager Instance { get; private set; }
-    private List<AsyncOperation> _scenesToLoad;
-
+    public int ScenesInBuild => SceneManager.sceneCountInBuildSettings;
     public event Action<float> WhileLoading;
+    private List<AsyncOperation> _scenesToLoad;
 
     /// <summary>
     /// Awake is called when the script instance is being loaded.
@@ -41,14 +41,9 @@ public class LoadingManager : MonoBehaviour
         }
     }
 
-    private void LoadLevelToTest(int buildIndex = 4)
+    private void LoadLevelToTest()
     {
-        if (buildIndex != 4)
-        {
-            StartGame(buildIndex);
-            return;
-        }
-        StartGame();
+        StartGame(4);
     }
 
     private void LoadMainMenu()
@@ -59,7 +54,7 @@ public class LoadingManager : MonoBehaviour
     /// <summary>
     /// Starts the game. To be used from main menu, start button
     /// </summary>
-    public void StartGame()
+    public void StartGame(int sceneIndex)
     {
         _scenesToLoad.Clear(); // Clear any previous operations
 
@@ -67,22 +62,18 @@ public class LoadingManager : MonoBehaviour
         _scenesToLoad.Add(SceneManager.LoadSceneAsync(
                                     3, LoadSceneMode.Additive)); // BaseScene
         _scenesToLoad.Add(SceneManager.LoadSceneAsync(
-                                    4, LoadSceneMode.Additive)); // First Level
+                                    sceneIndex, LoadSceneMode.Additive)); // Specified Level
         StartCoroutine(TrackLoadProgress());
     }
-    /// <summary>
-    /// Starts the game. To be used from main menu, start button
-    /// </summary>
-    public void StartGame(int buildIndex)
-    {
-        _scenesToLoad.Clear(); // Clear any previous operations
 
-        _scenesToLoad.Add(SceneManager.LoadSceneAsync(2)); // Loading Screen
-        _scenesToLoad.Add(SceneManager.LoadSceneAsync(
-                                    3, LoadSceneMode.Additive)); // BaseScene
-        _scenesToLoad.Add(SceneManager.LoadSceneAsync(
-                                    buildIndex, LoadSceneMode.Additive)); // First Level
-        StartCoroutine(TrackLoadProgress());
+    public void LoadLevel(int sceneIndex)
+    {
+        if (sceneIndex > SceneManager.sceneCountInBuildSettings)
+        {
+            ReturnToMenu();
+        }
+        SceneManager.UnloadSceneAsync(sceneIndex - 1);
+        SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
     }
 
     public void RestartLevel(int sceneIndex)

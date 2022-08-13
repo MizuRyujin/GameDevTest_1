@@ -8,7 +8,7 @@ public class KillPlane : MonoBehaviour
     /// Start is called on the frame when a script is enabled just before
     /// any of the Update methods is called the first time.
     /// </summary>
-    private void Awake()
+    private void Start()
     {
         _bounds.center = transform.position;
     }
@@ -20,7 +20,7 @@ public class KillPlane : MonoBehaviour
     {
         Collider[] colliders = new Collider[1];
         int hits = Physics.OverlapBoxNonAlloc(
-            _bounds.center, _bounds.extents, colliders,
+            _bounds.center, _bounds.extents * 0.5f, colliders,
             Quaternion.identity, LayerMask.GetMask("Player"));
         if (hits > 0)
         {
@@ -34,6 +34,7 @@ public class KillPlane : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawCube(transform.position, _bounds.extents);
+        _bounds.center = transform.position;
+        Gizmos.DrawCube(_bounds.center, _bounds.extents);
     }
 }

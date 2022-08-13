@@ -5,12 +5,13 @@ using System;
 public class PlayerController : MonoBehaviour
 {
     public event Action<int> OnNewScore;
+    public event Action OnDeath;
 
     public Rigidbody Rb { get; private set; }
-    public event Action OnDeath;
 
     [SerializeField, Expandable]
     private PlayerStats _playerStats;
+    private BarController _barController;
 
     [SerializeField]
     private Camera _playerCam;
@@ -35,6 +36,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void LevelLoaded(Vector3 restartPos)
+    {
+        Rb.MovePosition(restartPos);
+        _barController.ResetScale();
+    }
+
     public void Die()
     {
         OnDeath?.Invoke();
@@ -53,6 +60,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
+        _barController = GetComponent<BarController>();
         _moveDir = Vector3.zero;
         _lastPos = Vector3.zero;
     }
@@ -73,8 +81,6 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         if (GameManager.Instance.IsPaused) return;
-        // _mousePos = new Vector3(Input.mousePosition.x, Input.mousePosition.y,
-        //                                                 _main.nearClipPlane + 1);
         CheckTouch();
         LockZRotation();
         UprightOnGround();
