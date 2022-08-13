@@ -58,6 +58,10 @@ public class BarChunk : MonoBehaviour
         UpdateBarScale();
     }
 
+    /// <summary>
+    /// Move the edge transform to a specified position.
+    /// </summary>
+    /// <param name="newPosition">New edge position.</param>
     public void MoveEdgePosition(Vector3 newPosition)
     {
         _edgeTransform.position = newPosition;

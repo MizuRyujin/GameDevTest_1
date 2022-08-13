@@ -6,7 +6,6 @@ public class BarCollectable : BaseCollectable
 
     protected override void OnCollection(Collider collector)
     {
-        Debug.Log(collector.name);
         BarController controller;
 
         if (collector.TryGetComponent<BarController>(out controller))
@@ -14,6 +13,7 @@ public class BarCollectable : BaseCollectable
             Debug.Log(collector.name);
             controller.ChangeBothBarScale(_shouldIncrease);
             _collected = true;
+            Destroy(this.gameObject);
         }
         Debug.Log(_collected);
     }

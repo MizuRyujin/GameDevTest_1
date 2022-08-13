@@ -24,6 +24,5 @@ public abstract class BaseCollectable : MonoBehaviour
     {
         if(_collected) return;
         OnCollection(other);
-        Destroy(this.gameObject);
     }
 }

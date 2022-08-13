@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
@@ -9,7 +8,7 @@ public class CameraFollow : MonoBehaviour
     Vector3 _newPos;
     bool resetting;
 
-    private void Awake()
+    private void Start()
     {
         _playerRef = FindObjectOfType<PlayerController>();
         _playerRef.OnDeath += ResetCamera;
