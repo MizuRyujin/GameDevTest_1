@@ -4,6 +4,8 @@ using System;
 
 public class PlayerController : MonoBehaviour
 {
+    public event Action<int> OnNewScore;
+
     public Rigidbody Rb { get; private set; }
     public event Action OnDeath;
 
@@ -19,6 +21,7 @@ public class PlayerController : MonoBehaviour
     private bool _isTouching;
     private Ray _ray;
 
+    public int GetScore() => _playerStats.PlayerScore;
 
     public bool IsGrounded
     {
@@ -27,15 +30,21 @@ public class PlayerController : MonoBehaviour
             Collider[] results = new Collider[1];
             int hits = Physics.OverlapSphereNonAlloc(transform.position,
                                                         _feetRadius, results,
-                                                        LayerMask.GetMask("Ground"));
+                                                        LayerMask.GetMask("InputArea"));
             return results[0] != null;
         }
     }
 
     public void Die()
     {
-        GameManager.Instance.RestarLevel();
         OnDeath?.Invoke();
+        GameManager.Instance.RestarLevel();
+    }
+
+    public void SetNewScore(int scoreToAdd)
+    {
+        _playerStats.UpdateTotalScore(scoreToAdd);
+        OnNewScore?.Invoke(_playerStats.PlayerScore);
     }
 
     /// <summary>
@@ -80,7 +89,7 @@ public class PlayerController : MonoBehaviour
         {
             _isTouching = true;
 
-            if (Physics.Raycast(_ray, out RaycastHit hit, 100f, LayerMask.GetMask("Ground")))
+            if (Physics.Raycast(_ray, out RaycastHit hit, 100f, LayerMask.GetMask("InputArea")))
             {
                 _lastPos = hit.point;
             }
@@ -147,7 +156,7 @@ public class PlayerController : MonoBehaviour
 
         if (_isTouching)
         {
-            if (Physics.Raycast(_ray, out hit, 100f, LayerMask.GetMask("Ground")))
+            if (Physics.Raycast(_ray, out hit, 100f, LayerMask.GetMask("InputArea")))
             {
                 Vector3 newPos = transform.position;
                 Vector3 curMousePos = hit.point;

@@ -10,11 +10,9 @@ public class BarCollectable : BaseCollectable
 
         if (collector.TryGetComponent<BarController>(out controller))
         {
-            Debug.Log(collector.name);
             controller.ChangeBothBarScale(_shouldIncrease);
             _collected = true;
             Destroy(this.gameObject);
         }
-        Debug.Log(_collected);
     }
 }

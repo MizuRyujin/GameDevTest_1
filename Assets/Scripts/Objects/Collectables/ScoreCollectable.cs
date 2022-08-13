@@ -6,13 +6,14 @@ public class ScoreCollectable : BaseCollectable
 
     protected override void OnCollection(Collider collector)
     {
-        PlayerScore score;
+        PlayerController score;
 
-        if (collector.TryGetComponent<PlayerScore>(out score) ||
-            collector.transform.parent.TryGetComponent<PlayerScore>(out score))
+        if (collector.TryGetComponent<PlayerController>(out score) ||
+            collector.transform.parent.TryGetComponent<PlayerController>(out score))
         {
             score.SetNewScore(_scoreValue);
             _collected = true;
+            Destroy(this.gameObject);
         }
     }
 }

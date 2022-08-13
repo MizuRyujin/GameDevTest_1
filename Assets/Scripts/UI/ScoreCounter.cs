@@ -4,7 +4,7 @@ using TMPro;
 
 public class ScoreCounter : MonoBehaviour
 {
-    private PlayerScore _playerScore;
+    private PlayerController _player;
     private TMP_Text _text;
 
     /// <summary>
@@ -12,14 +12,14 @@ public class ScoreCounter : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-        _playerScore = FindObjectOfType<PlayerScore>();
-        _playerScore.OnNewScore += DisplayNewScore;
+        _player = FindObjectOfType<PlayerController>();
+        _player.OnNewScore += DisplayNewScore;
         _text = GetComponent<TMP_Text>();
-        _text.text = _playerScore.GetScore().ToString();
+        _text.text = _player.GetScore().ToString();
     }
 
     private void DisplayNewScore(int obj)
     {
-        _text.text = _playerScore.GetScore().ToString();
+        _text.text = _player.GetScore().ToString();
     }
 }
