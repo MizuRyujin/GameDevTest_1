@@ -11,8 +11,6 @@ public class GameManager : MonoBehaviour
     public event Action OnPauseGame;
     public event Action OnStartLevel;
 
-    [field: SerializeField] public bool IsTesting { get; private set; }
-
     [SerializeField] private PlayerStats _playerStats;
     private int _currentLevel;
 

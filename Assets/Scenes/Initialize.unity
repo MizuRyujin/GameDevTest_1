@@ -958,6 +958,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 649207d6d70d63746afe8160da7390b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _isTesting: 1
+  _levelToTest: 0
 --- !u!1 &1316129199
 GameObject:
   m_ObjectHideFlags: 0
@@ -1617,7 +1619,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd31073e67e58ad498bdfb7feb1a0c20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <IsTesting>k__BackingField: 0
   _playerStats: {fileID: 11400000, guid: 127a582a366fc9c40940afad60670448, type: 2}
 --- !u!4 &1968020586
 Transform:

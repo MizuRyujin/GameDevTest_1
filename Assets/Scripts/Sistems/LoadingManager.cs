@@ -4,12 +4,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+
+/* 
+    Scene build index order is important:
+
+        - Main Menu always index 1;
+        - Loading Screen index 2;
+        - Gameplay scene index 3;
+
+    Levels should be placed from index 4 upwards
+*/
+
 public class LoadingManager : MonoBehaviour
 {
     public static LoadingManager Instance { get; private set; }
+
     public int ScenesInBuild => SceneManager.sceneCountInBuildSettings;
     public event Action<float> WhileLoading;
     private List<AsyncOperation> _scenesToLoad;
+
+    [SerializeField] private bool _isTesting;
+    [SerializeField] private int _levelToTest;
 
     /// <summary>
     /// Awake is called when the script instance is being loaded.
@@ -27,23 +42,34 @@ public class LoadingManager : MonoBehaviour
         }
         _scenesToLoad = new List<AsyncOperation>();
 
+#if UNITY_ANDROID && !UNITY_EDITOR
+        _isTesting = false;
+#endif
+
     }
 
     private void Start()
     {
-        if (!GameManager.Instance.IsTesting)
+        if (_isTesting)
         {
-            LoadMainMenu();
+            LoadLevelToTest(_levelToTest);
+            return;
         }
-        else
-        {
-            LoadLevelToTest();
-        }
+
+        LoadMainMenu();
     }
 
-    private void LoadLevelToTest()
+    private void LoadLevelToTest(int levelToTest)
     {
-        StartGame(4);
+        // Default goes to first level
+        int levelIndex = 4 + levelToTest;
+        if (levelIndex > SceneManager.sceneCountInBuildSettings - 1)
+        {
+            levelIndex = 4;
+            Debug.LogWarning("No level with that index exists. Please check " +
+            "the build settings");
+        }
+        StartGame(levelIndex);
     }
 
     private void LoadMainMenu()
