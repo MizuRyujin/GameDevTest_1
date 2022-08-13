@@ -3,13 +3,14 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public event Action OnPauseGame;
+    public event Action OnStartLevel;
     public static GameManager Instance { get; private set; }
     public bool IsPaused { get; private set; }
     public PlayerController PlayerRef { get; set; }
-    public event Action OnPauseGame;
-    public event Action OnStartLevel;
+    public Transform RestartPoint { get; set; }
+
     [field: SerializeField] public bool IsTesting { get; private set; }
-    private Transform _restartPoint;
 
 
     /// <summary>
@@ -39,31 +40,6 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         KeyboardPause();
-        CheckForRestartPoint();
-    }
-
-    private void CheckForRestartPoint()
-    {
-        if (_restartPoint == null)
-        {
-            var obj = FindObjectOfType<RestartPoint>();
-            if (obj)
-            {
-                _restartPoint = obj.transform;
-            }
-        }
-    }
-
-    private void CheckForPlayerRef()
-    {
-        if (PlayerRef == null)
-        {
-            var obj = FindObjectOfType<PlayerController>();
-            if (obj)
-            {
-                PlayerRef = obj;
-            }
-        }
     }
 
     private void KeyboardPause()
@@ -75,10 +51,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void RestarLevel()
+    public void RestarLevel(int sceneIndex = 4)
     {
         LoadingManager.Instance.RestartLevel(4);
-        PlayerRef.Rb.MovePosition(_restartPoint.position);
+        PlayerRef.Rb.MovePosition(RestartPoint.position);
         PlayerRef.GetComponentInChildren<BarController>().ResetScale();
     }
 

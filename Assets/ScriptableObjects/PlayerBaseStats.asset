@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70bf4982e3a637d47b025ba0b7489e39, type: 3}
   m_Name: PlayerBaseStats
   m_EditorClassIdentifier: 
-  <MaxSpeed>k__BackingField: 10
-  <Acceleration>k__BackingField: 8
-  <SideMovementFactor>k__BackingField: 5
+  <MaxSpeed>k__BackingField: 15
+  <Acceleration>k__BackingField: 10
+  <PlayerScore>k__BackingField: 0
+  <CompletedLevels>k__BackingField: 0

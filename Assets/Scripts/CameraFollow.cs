@@ -11,7 +11,6 @@ public class CameraFollow : MonoBehaviour
     private void Start()
     {
         _playerRef = FindObjectOfType<PlayerController>();
-        _playerRef.OnDeath += ResetCamera;
     }
 
     /// <summary>
@@ -29,10 +28,7 @@ public class CameraFollow : MonoBehaviour
     /// </summary>
     private void LateUpdate()
     {
-        if (!resetting)
-        {
-            transform.position = _newPos;
-        }
+        transform.position = _newPos;
     }
 
     private void MoveTowardsPlayer()
@@ -44,19 +40,17 @@ public class CameraFollow : MonoBehaviour
         {
             _newPos.z = Mathf.Lerp(_newPos.z, _playerRef.transform.position.z - _zOffset, 1f);
         }
+        else
+        {
+            _newPos.z = _playerRef.transform.position.z - _zOffset;
+        }
         if (distance.y < -_yOffset)
         {
             _newPos.y = Mathf.Lerp(_newPos.y, _playerRef.transform.position.y + _yOffset, 1f);
         }
-    }
-
-    public void ResetCamera()
-    {
-        resetting = true;
-        Debug.Log("Resetting Cam");
-        transform.position = new Vector3(_playerRef.transform.position.x,
-                            _playerRef.transform.position.y + _yOffset,
-                            _playerRef.transform.position.z + _zOffset);
-        resetting = false;
+        else
+        {
+            _newPos.y = _playerRef.transform.position.y + _yOffset;
+        }
     }
 }

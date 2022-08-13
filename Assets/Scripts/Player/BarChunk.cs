@@ -34,7 +34,7 @@ public class BarChunk : MonoBehaviour
 
     public void ResetScale()
     {
-        _edgeTransform.position = _edgeInitialPos;
+        _edgeTransform.localPosition = _edgeInitialPos;
         UpdateBarScale();
     }
 
