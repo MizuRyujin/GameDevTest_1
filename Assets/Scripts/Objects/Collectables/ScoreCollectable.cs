@@ -11,9 +11,8 @@ public class ScoreCollectable : BaseCollectable
         if (collector.TryGetComponent<PlayerController>(out score) ||
             collector.transform.parent.TryGetComponent<PlayerController>(out score))
         {
-            score.SetNewScore(_scoreValue);
             _collected = true;
-            Destroy(this.gameObject);
+            score.SetNewScore(_scoreValue);
         }
     }
 }

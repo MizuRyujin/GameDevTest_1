@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
             Collider[] results = new Collider[1];
             int hits = Physics.OverlapSphereNonAlloc(transform.position,
                                                         _feetRadius, results,
-                                                        LayerMask.GetMask("InputArea"));
+                                                        LayerMask.GetMask("Ground"));
             return results[0] != null;
         }
     }
@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour
     public void LevelLoaded(Vector3 restartPos)
     {
         Rb.MovePosition(restartPos);
+        Rb.MoveRotation(Quaternion.identity);
         _barController.ResetScale();
     }
 
@@ -145,7 +146,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnPause()
     {
-        Debug.Log("No behaviour defined when paused");
+        _isTouching = false;
+        Rb.isKinematic = !Rb.isKinematic;
     }
 
     private void ContinuousMoveForward()

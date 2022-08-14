@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BarCollectable : BaseCollectable
 {
-    [SerializeField] protected bool _shouldIncrease;
+    [SerializeField] private bool _shouldIncrease;
 
     protected override void OnCollection(Collider collector)
     {
@@ -10,9 +10,8 @@ public class BarCollectable : BaseCollectable
 
         if (collector.TryGetComponent<BarController>(out controller))
         {
-            controller.ChangeBothBarScale(_shouldIncrease);
             _collected = true;
-            Destroy(this.gameObject);
+            controller.ChangeBothBarScale(_shouldIncrease);
         }
     }
 }

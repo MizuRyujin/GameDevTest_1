@@ -17,7 +17,7 @@ public class Saw : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        _model.Rotate(_model.right * 2f * Time.deltaTime, Space.Self);
+        _model.Rotate(transform.up, 100f * Time.deltaTime, Space.Self);
     }
 
     /// <summary>
