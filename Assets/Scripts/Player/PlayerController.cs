@@ -72,8 +72,6 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Start()
     {
-        GameManager.Instance.PlayerRef = this;
-        GameManager.Instance.OnPauseGame += OnPause;
     }
 
     /// <summary>
@@ -81,7 +79,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Update()
     {
-        if (GameManager.Instance.IsPaused) return;
+        if (GameManager.Instance && GameManager.Instance.IsPaused) return;
         CheckTouch();
         LockZRotation();
         UprightOnGround();
@@ -139,7 +137,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void FixedUpdate()
     {
-        if (GameManager.Instance.IsPaused) return;
+        if (GameManager.Instance && GameManager.Instance.IsPaused) return;
         MoveOnTouch();
         ContinuousMoveForward();
     }
@@ -174,6 +172,41 @@ public class PlayerController : MonoBehaviour
                 Rb.MovePosition(new Vector3(newPos.x, transform.position.y, transform.position.z));
                 _lastPos = hit.point;
             }
+        }
+    }
+
+    /// <summary>
+    /// This function is called when the object becomes enabled and active.
+    /// </summary>
+    private void OnEnable()
+    {
+        if (GameManager.Instance)
+        {
+            GameManager.Instance.PlayerRef = this;
+            GameManager.Instance.OnPauseGame += OnPause;
+        }
+    }
+
+    /// <summary>
+    /// This function is called when the behaviour becomes disabled or inactive.
+    /// </summary>
+    private void OnDisable()
+    {
+        if (GameManager.Instance)
+        {
+            GameManager.Instance.OnPauseGame -= OnPause;
+        }
+    }
+
+    /// <summary>
+    /// This function is called when the MonoBehaviour will be destroyed.
+    /// </summary>
+    private void OnDestroy()
+    {
+        if (GameManager.Instance)
+        {
+            GameManager.Instance.PlayerRef = null;
+            GameManager.Instance.OnPauseGame -= OnPause;
         }
     }
 }
