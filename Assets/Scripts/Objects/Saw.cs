@@ -29,7 +29,8 @@ public class Saw : MonoBehaviour
     {
         if (other.TryGetComponent<PlayerController>(out PlayerController player))
         {
-            Debug.LogWarning("Player should've died");
+            player.Die();
+            return;
         }
         if (other.transform.parent.TryGetComponent<BarController>(out BarController bar))
         {

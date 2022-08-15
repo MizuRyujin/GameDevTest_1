@@ -5,7 +5,6 @@ public abstract class BaseCollectable : MonoBehaviour
 {
     [SerializeField] private ParticleSystem _particles;
     [SerializeField] private AudioClip _pickupSFX;
-    private AudioSource _audioSource;
     private Collider _selfCol;
     private Transform _model;
 
@@ -18,7 +17,6 @@ public abstract class BaseCollectable : MonoBehaviour
     private void Awake()
     {
         _selfCol = GetComponent<Collider>();
-        _audioSource = GetComponent<AudioSource>();
         _selfCol.isTrigger = true;
         _model = transform.GetChild(0);
     }
@@ -46,7 +44,7 @@ public abstract class BaseCollectable : MonoBehaviour
     {
         ParticleSystem ps = Instantiate(_particles, transform.position, Quaternion.identity);
         ps.Play();
-        _audioSource.PlayOneShot(_pickupSFX);
+        AudioManager.Instance.PlayClip(_pickupSFX, AudioSourceType.SFX, true);
         yield return new WaitForSeconds(.1f);
         Destroy(this.gameObject);
     }

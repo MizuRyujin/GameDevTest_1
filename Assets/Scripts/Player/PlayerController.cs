@@ -61,6 +61,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         Rb = GetComponent<Rigidbody>();
+        Rb.isKinematic = true;
         _barController = GetComponent<BarController>();
         _moveDir = Vector3.zero;
         _lastPos = Vector3.zero;

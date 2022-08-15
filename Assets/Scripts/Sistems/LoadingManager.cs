@@ -22,6 +22,7 @@ public class LoadingManager : MonoBehaviour
     public int ScenesInBuild => SceneManager.sceneCountInBuildSettings;
     public event Action<float> WhileLoading;
     private List<AsyncOperation> _scenesToLoad;
+    private int _testLevelIndex;
 
     [SerializeField] private bool _isTesting;
     [SerializeField] private int _levelToTest;
@@ -62,14 +63,14 @@ public class LoadingManager : MonoBehaviour
     private void LoadLevelToTest(int levelToTest)
     {
         // Default goes to first level
-        int levelIndex = 4 + levelToTest;
-        if (levelIndex > SceneManager.sceneCountInBuildSettings - 1)
+        _testLevelIndex = 4 + levelToTest;
+        if (_testLevelIndex > SceneManager.sceneCountInBuildSettings - 1)
         {
-            levelIndex = 4;
+            _testLevelIndex = 4;
             Debug.LogWarning("No level with that index exists. Please check " +
             "the build settings");
         }
-        StartGame(levelIndex);
+        StartGame(_testLevelIndex);
     }
 
     private void LoadMainMenu()
@@ -86,9 +87,9 @@ public class LoadingManager : MonoBehaviour
 
         _scenesToLoad.Add(SceneManager.LoadSceneAsync(2)); // Loading Screen
         _scenesToLoad.Add(SceneManager.LoadSceneAsync(
-                                    3, LoadSceneMode.Additive)); // BaseScene
-        _scenesToLoad.Add(SceneManager.LoadSceneAsync(
                                     sceneIndex, LoadSceneMode.Additive)); // Specified Level
+        _scenesToLoad.Add(SceneManager.LoadSceneAsync(
+                                    3, LoadSceneMode.Additive)); // GameplayScene
         StartCoroutine(TrackLoadProgress());
     }
 
@@ -99,13 +100,20 @@ public class LoadingManager : MonoBehaviour
             ReturnToMenu();
         }
         SceneManager.UnloadSceneAsync(sceneIndex - 1);
-        SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
+        SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive).completed +=
+            _ => SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(sceneIndex));
     }
 
     public void RestartLevel(int sceneIndex)
     {
+        if (_isTesting)
+        {
+            sceneIndex = _testLevelIndex;
+        }
+
         SceneManager.UnloadSceneAsync(sceneIndex);
-        SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive);
+        SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Additive).completed +=
+            _ => SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(sceneIndex));
     }
 
     public void ReturnToMenu()
@@ -129,15 +137,16 @@ public class LoadingManager : MonoBehaviour
                 yield return null;
             }
         }
-        if (SceneManager.GetSceneByBuildIndex(3).isLoaded) // If gameplay scene is loaded
-        {
-            SceneManager.UnloadSceneAsync(2).completed += _ =>
-                SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(3));
-        }
-        else
-        {
+        // if (SceneManager.GetSceneByBuildIndex(3).isLoaded) // If gameplay scene is loaded
+        // {
+        //     SceneManager.UnloadSceneAsync(2).completed += _ =>
+        //         SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(3));
+        // }
+        // else
+        // {
             SceneManager.UnloadSceneAsync(2).completed += _ =>
                 Resources.UnloadUnusedAssets();
-        }
+        // }
+        GameManager.Instance.PauseResumeGame();
     }
 }

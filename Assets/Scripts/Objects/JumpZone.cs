@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class JumpZone : MonoBehaviour
 {
+    [SerializeField] private AudioClip _clip;
     [SerializeField] private int _forceImpulse = 10;
     [SerializeField, Range(0.1f, 1f)] private float _lowGravTime = 0.5f;
     [SerializeField] private int _gravityReduction = 2;
@@ -26,8 +27,9 @@ public class JumpZone : MonoBehaviour
     {
         if (other.TryGetComponent<PlayerController>(out PlayerController player))
         {
-            player.Rb.AddForce(player.Rb.velocity + transform.up * _forceImpulse, ForceMode.Impulse);
             StartCoroutine(ReduceGravity());
+            player.Rb.AddForce(player.Rb.velocity + Vector3.up * _forceImpulse, ForceMode.Impulse);
+            AudioManager.Instance.PlayClip(_clip, AudioSourceType.SFX, true);
         }
     }
 

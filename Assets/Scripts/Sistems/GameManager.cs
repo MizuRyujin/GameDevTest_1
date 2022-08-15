@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
     private void Initialize()
     {
         Cursor.lockState = CursorLockMode.Confined;
-        IsPaused = false;
+        IsPaused = true;
         _currentLevel = 4 + _playerStats.CompletedLevels;
         // 4 is the index for Level 0
     }
@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviour
         }
         LoadingManager.Instance.StartGame(_currentLevel);
     }
-    public void PauseGame()
+    public void PauseResumeGame()
     {
         IsPaused = !IsPaused;
         Time.timeScale = Time.timeScale == 0 ? 0f : 1f;
