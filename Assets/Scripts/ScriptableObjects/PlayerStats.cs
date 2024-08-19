@@ -1,18 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerStats : MonoBehaviour
+[CreateAssetMenu(fileName = "New Player Stats", menuName = "Scriptable Objects/Player Stats")]
+public class PlayerStats : ScriptableObject
 {
-    // Start is called before the first frame update
-    void Start()
+    [field: SerializeField] public float MaxSpeed { get; private set; }
+    [field: SerializeField] public float Acceleration { get; private set; }
+    [field: SerializeField] public int PlayerScore { get; private set; }
+    [field: SerializeField] public int CompletedLevels { get; private set; }
+
+    public void ResetLevels() => CompletedLevels = 0;
+    public void IncrementCompletedLevels()
     {
-        
+        CompletedLevels++;
+    }
+    public void UpdateTotalScore(int newScore)
+    {
+        PlayerScore += newScore;
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// Called when the script is loaded or a value is changed in the
+    /// inspector (Called in the editor only).
+    /// </summary>
+    private void OnValidate()
     {
-        
+        PlayerScore = 0;
+        CompletedLevels = 0;
     }
 }
